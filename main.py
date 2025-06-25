@@ -3,7 +3,7 @@ from fastapi.responses import StreamingResponse
 from fastapi import APIRouter, UploadFile, File, HTTPException
 import pandas as pd
 from io import BytesIO
- 
+
 app = FastAPI()
  
 @app.get("/ready")
