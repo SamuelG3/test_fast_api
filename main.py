@@ -4,6 +4,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 import pandas as pd
 from io import BytesIO
 from typing import List
+import requests
 
 app = FastAPI()
  
@@ -69,3 +70,35 @@ async def get_dummy_xlsx():
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": "attachment; filename=dummy.xlsx"}
         )
+
+@app.post("/concat_excel_from_urls")
+def concat_excel_from_urls(urls: List[str]):
+    dfs = []
+
+    for idx, url in enumerate(urls):
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+
+            df = pd.read_excel(BytesIO(response.content))
+            df["Arquivo"] = f"Arquivo {idx+1}"  # Identificador da origem
+            dfs.append(df)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Erro ao processar URL {url}: {str(e)}")
+
+    if not dfs:
+        raise HTTPException(status_code=400, detail="Nenhum arquivo válido foi processado.")
+
+    df_concat = pd.concat(dfs, ignore_index=True)
+
+    # Prepara para download
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+        df_concat.to_excel(writer, index=False)
+    output.seek(0)
+
+    return StreamingResponse(
+        output,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=arquivos_concatenados.xlsx"}
+    )
