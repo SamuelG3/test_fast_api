@@ -1,4 +1,4 @@
-from fastapi importFastAPI
+from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 import pandas as pd
 from io import BytesIO
