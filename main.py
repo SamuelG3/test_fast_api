@@ -25,7 +25,29 @@ async def converte_arquivo(file: UploadFile = File(...)):
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": "attachment; filename=modificado.xlsx"}
     )
-     
+ 
+@app.post("/multi_file_xlsx")
+async def converte_multiplos_arquivos(files: List[UploadFile] = File(...)):
+    dataframes = []
+
+    for idx, file in enumerate(files):
+        df = pd.read_excel(file.file)
+        df.insert(0, "Origem", f"Arquivo {idx + 1}")
+        dataframes.append(df)
+
+    df_concatenado = pd.concat(dataframes, ignore_index=True)
+
+    buffer = BytesIO()
+    with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
+        df_concatenado.to_excel(writer, index=False)
+    buffer.seek(0)
+
+    return StreamingResponse(
+        buffer,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=concatenado.xlsx"}
+    )
+ 
 @app.get("/dummy-xlsx")
 async def get_dummy_xlsx():
     # Create a dummy dataframe
