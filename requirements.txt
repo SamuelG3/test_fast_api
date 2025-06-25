@@ -4,3 +4,4 @@ pandas
 xlsxwriter
 pandas
 python-multipart
+openpyxl
