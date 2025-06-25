@@ -10,7 +10,7 @@ async def ready():
    return "READY"
 
 
-@router.post("/fatura_xlsx")
+@app.post("/fatura_xlsx")
 async def converte-arquivo(file: UploadFile = File(...)):
     try:
         df = pd.read_excel(file.file)
