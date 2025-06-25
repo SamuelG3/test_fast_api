@@ -8,7 +8,27 @@ app = FastAPI()
 @app.get("/ready")
 async def ready():
    return "READY"
- 
+
+
+@router.post("/fatura_xlsx")
+def converte-arquivo(file: UploadFile = File(...)):
+    try:
+        df = pd.read_excel(file.file)
+        df.insert(2, "c", "coluna nova")
+        # Write dataframe to a BytesIO buffer as Excel
+        buffer = BytesIO()
+        with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
+            df.to_excel(writer, index=False)
+        buffer.seek(0)
+       
+        return StreamingResponse(
+               buffer,
+               media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+               headers={"Content-Disposition": "attachment; filename=dummy.xlsx"}
+           )
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+     
 @app.get("/dummy-xlsx")
 async def get_dummy_xlsx():
    # Create a dummy dataframe
