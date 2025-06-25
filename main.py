@@ -9,7 +9,7 @@ app = FastAPI()
 @app.get("/ready")
 async def ready():
  return "READY"
-
+ 
 @app.post("/fatura_xlsx")
 async def converte_arquivo(file: UploadFile = File(...)):
     df = pd.read_excel(file.file)
