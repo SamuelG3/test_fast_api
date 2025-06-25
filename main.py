@@ -11,7 +11,7 @@ async def ready():
 
 
 @router.post("/fatura_xlsx")
-def converte-arquivo(file: UploadFile = File(...)):
+async def converte-arquivo(file: UploadFile = File(...)):
     try:
         df = pd.read_excel(file.file)
         df.insert(2, "c", "coluna nova")
