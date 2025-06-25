@@ -14,17 +14,19 @@ async def ready():
 async def converte_arquivo(file: UploadFile = File(...)):
     df = pd.read_excel(file.file)
     df.insert(2, "c", "coluna nova")
-    # Write dataframe to a BytesIO buffer as Excel
+   
     buffer = BytesIO()
     with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
         df.to_excel(writer, index=False)
     buffer.seek(0)
-
+    
+    filename = 
+    
     return StreamingResponse(
         buffer,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        headers={"Content-Disposition": "attachment; filename=dummy.xlsx"}
-        )
+        headers={"Content-Disposition": f"attachment; filename="arquivo_modificado.xlsx"}
+    )
      
 @app.get("/dummy-xlsx")
 async def get_dummy_xlsx():
