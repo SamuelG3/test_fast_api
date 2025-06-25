@@ -25,7 +25,7 @@ async def converte_arquivo(file: UploadFile = File(...)):
     return StreamingResponse(
         buffer,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        headers={"Content-Disposition": f"attachment; filename="arquivo_modificado.xlsx"}
+        headers={"Content-Disposition": "attachment; filename=modificado.xlsx"}
     )
      
 @app.get("/dummy-xlsx")
