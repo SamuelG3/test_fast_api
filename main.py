@@ -19,9 +19,7 @@ async def converte_arquivo(file: UploadFile = File(...)):
     with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
         df.to_excel(writer, index=False)
     buffer.seek(0)
-    
-    filename = 
-    
+        
     return StreamingResponse(
         buffer,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
