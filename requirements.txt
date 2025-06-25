@@ -5,3 +5,4 @@ xlsxwriter
 pandas
 python-multipart
 openpyxl
+requests
